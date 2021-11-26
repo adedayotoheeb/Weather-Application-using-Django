@@ -1,0 +1,30 @@
+{% if messages %}
+{% for mes in messages %}
+<div class="alert alert-success">{{ mes }}</div>
+{% endfor %}
+{% endif %}
+
+{% for hidden in form.hidden_fields %}
+{% if hidden.errors %}
+{% for error in hidden.errors %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endfor %}
+{% endif %}
+{{ hidden }}
+{% endfor %}
+
+
+{% for field in form.visible_fields %}
+{% if field.errors %}
+{% for error in field.errors %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endfor %}
+{% endif %}
+{% comment %} 
+<div class="form-group">
+    {{ field.label_tag }}
+    {{ field }}
+</div> {% endcomment %}
+
+{% endfor %}
+{% csrf_token %}

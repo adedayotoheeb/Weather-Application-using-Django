@@ -48,7 +48,7 @@
   <div class="form-group container">
     <form class="form-group justify-content-center align-items-center" method="POST">
       {% comment %} <input  class ='form-controlinput h-75' type="text"> {% endcomment %}
-      {% comment %} {% include 'api/form-snippet' with form=form %} {% endcomment %}
+      {% include 'api/form-snippet.html' with form=form %}
       {{form}}
       {% csrf_token %}
       <button class="btn w-50 " type = "Submit"><i class="bi bi-align-middle"></i>Add City</button>

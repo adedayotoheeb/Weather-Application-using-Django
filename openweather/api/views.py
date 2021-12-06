@@ -4,11 +4,12 @@ import requests
 from django.contrib import messages
 from .forms import CityForm
 from .models import City
+from django.views.decorators.csrf import csrf_exempt
 import datetime
 # Create your views here.
 api_key = "7e9d94b50e9b5ea7df2bc5328167575d"
 
-
+@csrf_exempt
 def index(request):
     url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid=7e9d94b50e9b5ea7df2bc5328167575d&units=metric"
 
@@ -30,20 +31,31 @@ def index(request):
     cities = City.objects.all()
 
     weather_data = []
+    print('yaay')
 
-    for city in cities:
+    try:
+        for city in cities:
+            if str(city) == "None":
+                city_weather = {
+                    "city": None,
+                    "temperature": None,
+                    "description": None,
+                    "icon": None,
+                    "day": None,
+                }
+            else:
+                response = requests.get(url.format(city)).json()
+                city_weather = {
+                    'city': city.name,
+                    'temperature': response['main']['temp'],
+                    'description': response['weather'][0]['description'],
+                    'icon': response['weather'][0]['icon'],
+                    'day':  datetime.date.today()
+                }
+            weather_data.append(city_weather)
+    except Exception as e:
+        print(e)
 
-        response = requests.get(url.format(city)).json()
-
-        city_weather = {
-            'city': city.name,
-            'temperature': response['main']['temp'],
-            'description': response['weather'][0]['description'],
-            'icon': response['weather'][0]['icon'],
-            'day':  datetime.date.today()
-        }
-        print(city_weather)
-        weather_data.append(city_weather)
 
     context = {'weather_data': weather_data, "form": form}
     return render(request, 'api/index.html', context)
